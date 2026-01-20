@@ -1,12 +1,6 @@
 # @lytical/ioc
 
-todo: place sub title here...
-
-this is a template project to publish npm library packages.
-
-- clone the repository `git clone https://lyticalinc@dev.azure.com/lyticalinc/lytical/_git/ts-lib-template <lib-name>`
-- run the `node init` to configure
-
+A TypeScript Inversion of Control (IoC) library for managing dependency injection in your applications.
 
 ## Getting Started 
 

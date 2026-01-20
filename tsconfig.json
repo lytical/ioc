@@ -5,10 +5,9 @@
     "outDir": "./dist",
 
     // Environment Settings
-    "lib": ["es6", "dom"],
+    "lib": ["es6"],
     "module": "esnext",
     "target": "es6",
-    "types": [],
 
     "sourceMap": true,
     "declaration": true,

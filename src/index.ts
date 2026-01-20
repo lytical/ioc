@@ -4,4 +4,18 @@
   please refer to your license agreement on the use of this file.
 */
 
-// todo: place core library code here...
+import { ioc_func_no_invoke } from './const.js';
+
+import ioc from './helper.js';
+
+export default ioc;
+export * from './collection.js';
+export * from './container.js';
+export * from './inject.js';
+
+declare global {
+  interface Function {
+    ioc_no_invoke?: true;
+    [ioc_func_no_invoke]?: true;
+  }
+}
