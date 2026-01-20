@@ -8,6 +8,9 @@
  * represents an inversion of control collection.
  * @description
  * utilize to configure services and initialize the container.
+ * all node modules and their dependencies should be registered before creating the container.
+ * loaded node modules containing injectables will register services into the collection automatically.
+ * manually import modules containing injectables to ensure they are registered.
  * @interface ioc_collection_t
  */
 export interface ioc_collection_t {
@@ -22,8 +25,11 @@ export interface ioc_collection_t {
   ): this;
 
   /**
-   * initialize and get the ioc container
-   * @returns the ioc container
+   * initialize and get the ioc container.
+   * call this method after all services are registered.
+   * this can be called just before listening for requests in a server application,
+   * or in a start hook in a azure function application, ...
+   * @returns a promise that resolves to the ioc container
    */
   create_container(): Promise<ioc_container_t>;
 
