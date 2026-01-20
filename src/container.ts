@@ -26,13 +26,6 @@ export function ioc_container_init(
 
 @lyt_sealed
 class container implements ioc_container_t {
-  /**
-   * get the specified service.
-   * @param type the class or function type of the service.
-   * resulting function types that should not be invoked must have a static (ioc_no_invoke) property set to (true).
-   * @param args optional values to append to the constructor or delegate function arguments, when creating an instance of the service or invoking the delegate.
-   * @returns the type or instance of the service if it's registered, otherwise (undefined).
-   */
   get<_t_>(type: lyt_type_t<_t_>, ...args: unknown[]): _t_ | undefined {
     ok(_collection, 'ioc container not initialized.');
     if (args.length && _instance.has(type)) {
@@ -88,12 +81,6 @@ class container implements ioc_container_t {
     return undefined;
   }
 
-  /**
-   * gets the service type or instance if registered, or otherwise creates a new instance of the specified type.
-   * @param type the type of the service.
-   * @param args optional values to append to the constructor or delegate function arguments, when creating an instance of the service or invoking the delegate.
-   * @returns the type or instance of the service, whether if it's registered or not.
-   */
   get_or_create<_t_>(
     type: lyt_type_t<_t_>,
     ...args: unknown[]
@@ -106,21 +93,11 @@ class container implements ioc_container_t {
     return rt;
   }
 
-  /**
-   * determine if a service type is registered.
-   * @param type the service type.
-   */
   has(type: lyt_type_t): boolean {
     ok(_collection, 'ioc container not initialized.');
     return _collection!.has(type);
   }
 
-  /**
-   * get the required specified services. an assert exception is throw if the service is not registered.
-   * @param type the class or function type of the service.
-   * @param err_msg optional error message to throw when the service is not registered.
-   * @returns the type or instance of the service.
-   */
   require<_t_>(type: lyt_type_t<_t_>, ...args: unknown[]): _t_ {
     const rt = this.get<_t_>(type, ...args);
     ok(rt !== undefined, `required type (${type.name}) not registered.`);

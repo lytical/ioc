@@ -91,7 +91,7 @@ export class lyt_obj {
   static merge<_t_ = object>(target: _t_, ...source: object[]): _t_ {
     if (target !== null && source !== null) {
       for (let src of source) {
-        while (src != _objectpt && src != _arraypt) {
+        while (src !== _objectpt && src !== _arraypt) {
           lyt_obj._merge(target, src, Object.getOwnPropertyNames(src));
           lyt_obj._merge(target, src, Object.getOwnPropertySymbols(src));
           src = Object.getPrototypeOf(src);

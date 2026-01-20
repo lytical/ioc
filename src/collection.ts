@@ -17,9 +17,8 @@ import ioc from './helper.js';
 const _opt = new Map<lyt_type_t, (() => object | Promise<object>)[]>();
 const _svc = new Map<lyt_type_t, unknown>();
 
-export
 @lyt_sealed
-class ioc_collection implements ioc_collection_t {
+class collection implements ioc_collection_t {
   configure_option<_t_ extends object>(
     type: lyt_type_t,
     value: _t_ | (() => _t_ | Promise<_t_>),
@@ -32,10 +31,6 @@ class ioc_collection implements ioc_collection_t {
     return this;
   }
 
-  /**
-   * get the ioc container.
-   * @returns an ioc container
-   */
   async create_container(): Promise<ioc_container_t> {
     if (!this._container) {
       for (const [type, cfg] of _opt.entries()) {
@@ -55,20 +50,10 @@ class ioc_collection implements ioc_collection_t {
     return this._container!;
   }
 
-  /**
-   *
-   * @param type the class or function type of the service.
-   * @returns true if the type is registered.
-   */
   has(type: lyt_type_t) {
     return _svc.has(type);
   }
 
-  /**
-   * set or replace the specified service.
-   * @param type the class or function type of the service.
-   * @param arg the type; instance of the service
-   */
   set(type: lyt_type_t | [lyt_type_t], arg?: any): this {
     if (Array.isArray(type)) {
       type = type[0];
@@ -94,4 +79,4 @@ class ioc_collection implements ioc_collection_t {
   private _container?: ioc_container_t;
 }
 
-export default new ioc_collection();
+export default <ioc_collection_t>new collection();

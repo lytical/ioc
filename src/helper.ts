@@ -9,8 +9,9 @@ import { ok } from 'node:assert';
 import type {
   lyt_cstor_t,
   ioc_container_t,
-  ioc_method_metadata_t,
 } from './types';
+
+import type { ioc_method_metadata_t } from './inject';
 
 import { ioc_cstor_nm, ioc_argument_inject } from './const.js';
 

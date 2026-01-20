@@ -7,8 +7,7 @@
 import type {
   lyt_cstor_t,
   ioc_container_t,
-  ioc_method_metadata_t,
-  ioc_method_args_t,
+  lyt_type_t,
 } from './types';
 
 import {
@@ -62,3 +61,6 @@ export function ioc_inject(type: Function | lyt_cstor_t, ...args: unknown[]) {
     }
   };
 }
+
+export type ioc_method_args_t = { type: lyt_type_t; args: unknown[] };
+export type ioc_method_metadata_t = Record<string, ioc_method_args_t[]>;

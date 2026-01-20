@@ -7,11 +7,10 @@
 import { expect } from 'chai';
 import { describe } from 'mocha';
 
-import { ioc_collection } from './collection.js';
+import sc from './collection.js';
 
 describe('an ioc collection', () => {
   it('can save options and a container can get the aggregated options.', async () => {
-    const sc = new ioc_collection();
     sc.configure_option<test_opt>(test_opt, { a: 1 });
     sc.configure_option<test_opt>(test_opt, () => ({ b: 2 }));
     sc.configure_option<test_opt>(test_opt, () => Promise.resolve({ c: 3 }));
