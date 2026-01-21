@@ -1,15 +1,15 @@
 {
   "name": "@lytical/ioc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "TypeScript Inversion of Control (IoC, Dependency Injection) for Node",
   "main": "index.js",
   "private": false,
   "scripts": {
-    "build": "tsc --build&&gulp post_build",
-    "build-dev": "tsc --build",
+    "build": "tsc --build",
+    "publish": "npm run clean&&npm run build&&gulp post_build&&cd ./dist&&npm publish",
     "clean": "rimraf ./dist",
-    "rebuild": "npm run clean&&npm run build",
-    "test": "mocha --recursive ./dist/**/*.test.js"
+    "rebuild": "npm run clean&&npm install&&npm run build",
+    "test": "npm run clean&&npm run build&&mocha --recursive ./dist/**/*.test.js"
   },
   "keywords": [
     "ioc",
@@ -37,6 +37,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^25.0.9",
     "gulp": "^5.0.1",
+    "gulp-clean": "^0.4.0",
     "gulp-uglify-es": "^3.0.0",
     "chai": "^6.2.2",
     "mocha": "^11.7.5",

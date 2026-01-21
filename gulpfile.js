@@ -4,13 +4,18 @@
   please refer to your license agreement on the use of this file.
 */
 
+import _clean from 'gulp-clean';
 import _gulp from 'gulp';
 import _pump from 'pump';
 import _uglify from 'gulp-uglify-es';
 
 export const post_build = _gulp.parallel(
   (done) =>
-    _pump(_gulp.src(['package.json', 'README.md', './src/types.d.ts']), _gulp.dest('./dist'), done),
+    _pump(
+      _gulp.src(['package.json', 'README.md', './src/types.d.ts']),
+      _gulp.dest('./dist'),
+      done,
+    ),
   (done) =>
     _pump(
       _gulp.src('./dist/**/*.js', { dot: true }),
@@ -21,4 +26,6 @@ export const post_build = _gulp.parallel(
       _gulp.dest('./dist'),
       done,
     ),
+  (done) =>
+    _pump(_gulp.src('./dist/**/*.map', { read: false }), _clean(), done),
 );

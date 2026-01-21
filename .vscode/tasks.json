@@ -22,9 +22,16 @@
 		},
 		{
 			"type": "npm",
+			"script": "publish",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "publish",
+			"detail": "clean, build, and publish the project"
+		},
+		{
+			"type": "npm",
 			"script": "test",
 			"group": "test",
-			"dependsOn": "rebuild",
 			"problemMatcher": [],
 			"label": "test",
 			"detail": "clean, build, and run tests"
