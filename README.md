@@ -235,7 +235,97 @@ collection.create_container().then((sc) => {
 
 ## Documentation
 
-todo: add documentation here...
+#### * ioc_collection_t
+
+represents an inversion of control collection which is the default returned from `'@lytical/ioc/collection'`
+
+`import collection from '@lytical/ioc/collection'`
+
+
+utilize it to configure services; options and to initialize the container.
+loaded node modules containing injectables will register services into the collection automatically.
+all registrations; node modules and their dependencies, containing injectables, should be loaded before creating the container.
+manually register services, and import modules containing injectables to ensure they are registered.
+
+| method | description |
+| --- | --- |
+| configure_option | configure an option for a type |
+| create_container | initialize and get the ioc container. call this method after all services are registered. this can be called just before listening for requests in a server application, or in a start hook in an azure function application |
+| has | check if a type is registered in the collection |
+| set | register a service factory for a type |
+| set_func | register a service function. the container will return the function instead of invoking it |
+
+#### * ioc_container_t
+
+represents an inversion of control container which is the default returned from `'@lytical/ioc'`
+
+`import container from '@lytical/ioc'`
+
+utilize to retrieve service and 'option' instances.
+
+| method | description |
+| --- | --- |
+| get | get a service from the container |
+| get_or_create | get a service from the container or create an instance of the provided type |
+| has | check if a service is registered in the container |
+| require | get the required specified services. an assert exception is throw if the service is not registered |
+
+#### * @ioc_injectable(arg?)
+
+decorates a class as an injectable service
+
+```typescript
+@ioc_injectable()
+export class test_svc {}
+```
+
+a delegate function can be specified as an argument (delegate(svc: container): unknown|[[unknown]]) to implement a factory pattern.\
+this delegate will be invoked when the service instance is requested.\
+if a delegate function returns an array, within an array, containing a single element ([[unknown]]),\
+this element will replace the delegate as the service instance or type.\
+this allows for lazy evaluation of the service instance or type, and is the only case where the container is mutated.
+
+#### * @ioc_inject(type)
+
+decorates a class method argument, indicating the type of service to inject.
+
+```typescript
+class my_class {
+
+  constructor(@ioc_inject(logger_svc) private readonly _log?: logger_svc) {}
+
+  my_method(@ioc_inject(test_svc) svc: test_svc) {}
+
+}
+```
+
+#### * ioc_create_instance(type, ...args)
+
+create an instance of the specified class, by injecting dependencies obtained from the ioc container.\
+optional arguments may be provided to append to the constructor arguments.
+
+```typescript
+const svc = ioc_create_instance(my_class);
+```
+
+#### * ioc_get_method_args(type_or_instance, method_name)
+
+returns the an array of method arguments, by obtaining dependencies obtained from the ioc container.
+
+```typescript
+const svc = ioc_get_method_args(my_class, 'do_something');
+```
+
+#### * ioc_invoke_method(method, type_or_instance, ...args)
+
+invoke the specified class method, by injecting dependencies obtained from the ioc container.\
+optional arguments may be provided to append to the method arguments.
+
+```typescript
+const cls = new my_class();
+const result = ioc_invoke_method(cls.do_something, cls);
+```
+
 
 Stay tuned! I have more packages to come.`
 
