@@ -1,11 +1,12 @@
 {
   "name": "@lytical/ioc",
   "version": "1.0.0",
-  "description": "A TypeScript Inversion of Control (IoC) library for managing dependency injection in your applications.",
+  "description": "TypeScript Inversion of Control (IoC, Dependency Injection) for Node",
   "main": "index.js",
   "private": false,
   "scripts": {
     "build": "tsc --build&&gulp post_build",
+    "build-dev": "tsc --build",
     "clean": "rimraf ./dist",
     "rebuild": "npm run clean&&npm run build",
     "test": "mocha --recursive ./dist/**/*.test.js"
@@ -30,10 +31,6 @@
   },
   "license": "ISC",
   "type": "module",
-  "dependencies": {
-    "chai": "^6.2.2",
-    "mocha": "^11.7.5"
-  },
   "devDependencies": {
     "@types/chai": "^5.2.3",
     "@types/jspath": "^0.4.2",
@@ -41,6 +38,8 @@
     "@types/node": "^25.0.9",
     "gulp": "^5.0.1",
     "gulp-uglify-es": "^3.0.0",
+    "chai": "^6.2.2",
+    "mocha": "^11.7.5",
     "pump": "^3.0.3",
     "rimraf": "^6.1.2",
     "typescript": "^5.9.3"

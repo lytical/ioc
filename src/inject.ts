@@ -20,15 +20,14 @@ import collection from './collection.js';
 
 /**
  * decorates a class as an injectable service.
- * @param arg (optional) type of the implementation of the service. the decorated type is used if not specified.
- *
- * a delegate function can be specified (delegate(svc: container): unknown|[unknown]).
+ * @description
+ * a delegate function can be specified as an argument (delegate(svc: container): unknown|[[unknown]]) to implement a factory pattern.
  * this delegate will be invoked when the service instance is requested.
- * if a delegate function returns an array with a single element ([unknown]),
+ * if a delegate function returns an array, within an array, containing a single element ([[unknown]]),
  * this element will replace the delegate as the service instance or type.
  * this allows for lazy evaluation of the service instance or type.
- *
- * @returns the typescript decorator.
+ * @param arg (optional) a factory method, or the type that implements the service. the decorated type is registered if not specified.
+ * @returns the typescript decorator function.
  */
 export function ioc_injectable(
   arg?: ((svc: ioc_container_t) => unknown) | Function,

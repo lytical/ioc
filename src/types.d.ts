@@ -17,10 +17,10 @@ export interface ioc_collection_t {
   /**
    * configure an option for a type
    * @param type the type to configure
-   * @param value the value to configure
+   * @param value the value to configure; or a delegate that returns the value or a promise that resolves to the value
    */
   configure_option<_t_ extends object>(
-    type: lyt_type_t,
+    type: lyt_type_t<_t_>,
     value: _t_ | (() => _t_ | Promise<_t_>),
   ): this;
 

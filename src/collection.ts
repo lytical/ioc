@@ -10,9 +10,8 @@ import type { lyt_type_t, ioc_collection_t, ioc_container_t } from './types';
 
 import { lyt_sealed } from './lib/sealed.js';
 import { ioc_func_no_invoke } from './const.js';
-import { ioc_container_init } from './container.js';
+import { ioc_container_init, ioc_create_instance } from './container.js';
 import { lyt_obj } from './lib/obj.js';
-import ioc from './helper.js';
 
 const _opt = new Map<lyt_type_t, (() => object | Promise<object>)[]>();
 const _svc = new Map<lyt_type_t, unknown>();
@@ -20,7 +19,7 @@ const _svc = new Map<lyt_type_t, unknown>();
 @lyt_sealed
 class collection implements ioc_collection_t {
   configure_option<_t_ extends object>(
-    type: lyt_type_t,
+    type: lyt_type_t<_t_>,
     value: _t_ | (() => _t_ | Promise<_t_>),
   ) {
     if (_opt.has(type)) {
@@ -43,7 +42,8 @@ class collection implements ioc_collection_t {
           }),
         );
         const rs = lyt_obj.merge({}, ...obj);
-        this.set(type, () => lyt_obj.clone(rs));
+        Object.freeze(rs);
+        this.set(type, rs);
       }
       this._container = ioc_container_init(_svc);
     }
@@ -57,7 +57,7 @@ class collection implements ioc_collection_t {
   set(type: lyt_type_t | [lyt_type_t], arg?: any): this {
     if (Array.isArray(type)) {
       type = type[0];
-      arg = (svc: ioc_container_t) => [[[ioc.create_instance(<any>type, svc)]]];
+      arg = (svc: ioc_container_t) => [[[ioc_create_instance(<any>type, svc)]]];
     }
     ok(
       !_svc.has(type),

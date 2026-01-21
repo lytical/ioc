@@ -6,12 +6,12 @@
 
 import { ioc_func_no_invoke } from './const.js';
 
-import ioc from './helper.js';
+import container from './container.js';
 
 export * from './collection.js';
 export * from './container.js';
 export * from './inject.js';
-export default ioc;
+export default container;
 
 declare global {
   interface Function {

@@ -7,22 +7,19 @@
 import { ok } from 'node:assert';
 
 import type { ioc_container_t, lyt_cstor_t, lyt_type_t } from './types';
+import type { ioc_method_metadata_t } from './inject';
 
 import { lyt_sealed } from './lib/sealed.js';
 import { lyt_obj } from './lib/obj.js';
-import ioc from './helper.js';
-import { ioc_func_no_invoke } from './const.js';
 
-let _collection: Map<lyt_type_t, unknown>;
+import {
+  ioc_argument_inject,
+  ioc_cstor_nm,
+  ioc_func_no_invoke,
+} from './const.js';
+
+let _collection: Map<lyt_type_t, unknown> | undefined;
 const _instance = new Map<lyt_type_t, { args: unknown[]; rt: unknown }[]>();
-
-export function ioc_container_init(
-  map: Map<Function, unknown>,
-): ioc_container_t {
-  ok(!_collection?.size, 'ioc container already created.');
-  _collection = new Map<lyt_type_t, unknown>(map.entries());
-  return _container;
-}
 
 @lyt_sealed
 class container implements ioc_container_t {
@@ -49,7 +46,7 @@ class container implements ioc_container_t {
           Array.isArray(rt[0]) &&
           rt[0].length === 1
         ) {
-          const imp = rt[0][0];
+          const [imp] = rt[0];
           if (args.length) {
             if (_instance.has(type)) {
               _instance.get(type)!.push({ args, rt: imp });
@@ -64,7 +61,7 @@ class container implements ioc_container_t {
         return <_t_>rt;
       }
       // it's a class. instantiate and return
-      const rt = ioc.create_instance<_t_>(
+      const rt = ioc_create_instance<_t_>(
         <lyt_cstor_t<_t_>>func,
         this,
         ...args,
@@ -89,7 +86,7 @@ class container implements ioc_container_t {
     if (rt) {
       return rt;
     }
-    rt = ioc.create_instance<_t_>(<lyt_cstor_t<_t_>>type, this, ...args);
+    rt = ioc_create_instance<_t_>(<lyt_cstor_t<_t_>>type, this, ...args);
     return rt;
   }
 
@@ -107,3 +104,80 @@ class container implements ioc_container_t {
 
 const _container: ioc_container_t = new container();
 export default _container;
+
+/**
+ * initialize the ioc container.
+ * @description
+ * this method is invoked by the collection when creating the container.
+ * @param map the map of types to their instances.
+ * @returns the initialized container.
+ */
+export function ioc_container_init(
+  map: Map<Function, unknown>,
+): ioc_container_t {
+  ok(!_collection?.size, 'ioc container already created.');
+  _collection = new Map<lyt_type_t, unknown>(map.entries());
+  return _container;
+}
+
+/**
+ * create an instance of the specified class, by injecting services obtained from the ioc container.
+ * @param cstor the class constructor of the instance to return.
+ * @param svc the ioc container used to inject constructor arguments.
+ * @param args optional values to append to the constructor arguments.
+ * @returns the constructed instance of the specified class.
+ */
+export function ioc_create_instance<_t_ = any>(
+  cstor: lyt_cstor_t<_t_>,
+  ...args: unknown[]
+): _t_ {
+  return <_t_>(
+    new cstor(...ioc_get_method_args(cstor, ioc_cstor_nm).concat(args))
+  );
+}
+
+/**
+ * the the method arguments, by obtaining injectable services obtained from the ioc container.
+ * @param cstr the class type containing the specified class method.
+ * @param method_nm the class method to get arguments for. the constructor's arguments are returned if not specified.
+ * @returns an array of arguments that may be used to invoke the specified class method.
+ */
+export function ioc_get_method_args(cstr: any, method_nm: string): any[] {
+  while (cstr) {
+    let metadata: ioc_method_metadata_t = cstr[ioc_argument_inject];
+    if (!metadata) {
+      metadata = cstr.prototype?.[ioc_argument_inject];
+      if (!metadata) {
+        metadata = Object.getPrototypeOf(cstr)?.[ioc_argument_inject];
+      }
+    }
+    if (metadata) {
+      const method_arg = metadata?.[method_nm];
+      if (method_arg !== undefined) {
+        return method_arg.map((x) =>
+          x ? _container.get(x.type, ...x.args) : undefined,
+        );
+      }
+    }
+    cstr = Object.getPrototypeOf(cstr);
+  }
+  return [];
+}
+
+/**
+ * invoke the specified class method, by injecting services obtained from the ioc container.
+ * @param {method} method the function to invoke.
+ * @param instance the class type containing the specified method.
+ * @param args optional values to append to the function arguments.
+ * @returns the function's return value.
+ */
+export function ioc_invoke_method(
+  method: Function,
+  instance: object,
+  ...args: unknown[]
+): any {
+  return method.apply(
+    instance,
+    ioc_get_method_args(instance, method.name).concat(args),
+  );
+}
