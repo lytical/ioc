@@ -1,6 +1,6 @@
 {
   "name": "@lytical/ioc",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "TypeScript Inversion of Control (IoC, Dependency Injection) for Node",
   "main": "index.js",
   "private": false,
