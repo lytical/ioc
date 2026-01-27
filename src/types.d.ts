@@ -49,7 +49,7 @@ export interface ioc_collection_t {
 
   /**
    * register a service type or value for a type
-   * @param type the type to register
+   * @param type the type to register. pass the type as a single member of an array ([class_type]) to register a singleton.
    * @param arg the service type or value to register
    */
   set(type: lyt_type_t | [lyt_type_t], arg?: any): this;

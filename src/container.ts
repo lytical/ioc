@@ -85,7 +85,7 @@ class container implements ioc_container_t {
     if (rt) {
       return rt;
     }
-    rt = ioc_create_instance<_t_>(<lyt_cstor_t<_t_>>type, this, ...args);
+    rt = ioc_create_instance<_t_>(<lyt_cstor_t<_t_>>type, ...args);
     return rt;
   }
 

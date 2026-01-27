@@ -57,11 +57,11 @@ class collection implements ioc_collection_t {
   set(type: lyt_type_t | [lyt_type_t], arg?: any): this {
     if (Array.isArray(type)) {
       type = type[0];
-      arg = (svc: ioc_container_t) => [[[ioc_create_instance(<any>type, svc)]]];
+      arg = () => [[ioc_create_instance(<any>type)]];
     }
     ok(
       !_svc.has(type),
-      `service ${type.name} already registered and will not be registered.`,
+      `service ${type.name} already registered and the provided type will not be registered.`,
     );
     _svc.set(type, arg || type);
     return this;
