@@ -32,7 +32,7 @@ describe('an ioc collection', () => {
     expect(opt.c).eq(3);
   });
 
-  it('can create an instance of a class with injected services.', async () => {
+  it('can create an instance of a class and invoke method injected services.', async () => {
     const sc = await collection.create_container();
     expect(sc).exist;
     expect(sc.has(test_svc)).true;
@@ -44,6 +44,20 @@ describe('an ioc collection', () => {
     expect(svc).exist;
     const rs2 = svc?.do_something();
     expect(rs2).eq('done');
+  });
+
+  it('can create an instance of a class with injected constructors.', async () => {
+    const sc = await collection.create_container();
+    expect(sc).exist;
+    expect(sc.has(test_cstor_svc)).true;
+    let svc = sc.get(test_cstor_svc);
+    expect(svc).exist;
+    let rs2 = svc?.do_something();
+    expect(rs2).eq('done for default');
+    svc = sc.get(test_cstor_svc, 'custom_id');
+    expect(svc).exist;
+    rs2 = svc?.do_something();
+    expect(rs2).eq('done for custom_id');
   });
 });
 
@@ -57,6 +71,14 @@ class test_opt {
 export class test_svc {
   do_something(): string {
     return 'done';
+  }
+}
+
+@ioc_injectable()
+export class test_cstor_svc {
+  constructor(public readonly id = 'default') {}
+  do_something(): string {
+    return 'done for ' + this.id;
   }
 }
 

@@ -63,7 +63,6 @@ class container implements ioc_container_t {
       // it's a class. instantiate and return
       const rt = ioc_create_instance<_t_>(
         <lyt_cstor_t<_t_>>func,
-        this,
         ...args,
       );
       if (args.length) {
