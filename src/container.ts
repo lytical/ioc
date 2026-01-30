@@ -24,7 +24,9 @@ const _instance = new Map<lyt_type_t, { args: unknown[]; rt: unknown }[]>();
 @lyt_sealed
 class container implements ioc_container_t {
   get<_t_>(type: lyt_type_t<_t_>, ...args: unknown[]): _t_ | undefined {
-    ok(_collection, 'ioc container not initialized.');
+    if (!_collection) {
+      return undefined;
+    }
     if (args.length && _instance.has(type)) {
       const rs = _instance
         .get(type)!
@@ -61,10 +63,7 @@ class container implements ioc_container_t {
         return <_t_>rt;
       }
       // it's a class. instantiate and return
-      const rt = ioc_create_instance<_t_>(
-        <lyt_cstor_t<_t_>>func,
-        ...args,
-      );
+      const rt = ioc_create_instance<_t_>(<lyt_cstor_t<_t_>>func, ...args);
       if (args.length) {
         if (_instance.has(type)) {
           _instance.get(type)!.push({ args, rt });
@@ -90,8 +89,7 @@ class container implements ioc_container_t {
   }
 
   has(type: lyt_type_t): boolean {
-    ok(_collection, 'ioc container not initialized.');
-    return _collection!.has(type);
+    return _collection?.has(type) || false;
   }
 
   require<_t_>(type: lyt_type_t<_t_>, ...args: unknown[]): _t_ {
