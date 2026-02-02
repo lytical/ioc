@@ -1,6 +1,6 @@
 {
   "name": "@lytical/ioc",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "TypeScript Inversion of Control (IoC, Dependency Injection) for Node",
   "main": "index.js",
   "private": false,
@@ -30,7 +30,7 @@
     "url": "git+https://github.com/lytical/ioc.git"
   },
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "devDependencies": {
     "@types/chai": "^5.2.3",
     "@types/jspath": "^0.4.2",
