@@ -13,6 +13,7 @@ const _uglify = require('gulp-uglify-es');
 async function remove_package_json_scripts(done) {
   const package = await require('./dist/package.json');
   delete package.scripts;
+  delete package.devDependencies;
   await _fs.writeFile(
     './dist/package.json',
     JSON.stringify(package, null, 2),

@@ -20,14 +20,84 @@ after installing ioc, configure your `tsconfig.json` file to enable decorators.
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true // optional
   }
 }
 ```
 
 ## usage
 
-decorate your injectables using `@ioc_injectable()`, and then use the container to create an instance of the injectable.
+there are two (2) steps to using this library:
+
+1. register dependencies in the `collection`.
+2. create the `container`, that will contain all the registered dependencies.
+
+### important
+
+in your application startup, you **must** register all the dependencies\
+in the `collection` prior to the creation of the `container`.
+
+once the `container` is created, it becomes immutable.
+
+only the first dependency type is registered in the `collection`.\
+trying to override / change the dependency type in the `collection`, is not allowed.
+
+### registering dependencies
+
+there are two (2) ways to register your dependencies:
+
+1. use the `collection.set(...)` method
+2. use decorators on your class definitions to auto register the class, upon it's module loading.
+
+### important
+
+for auto registration to work, the module (containing the auto registered dependency)\
+must be loaded, prior to the creation of the `container`.
+
+you can accomplish this multiple ways...
+
+```typescript
+import 'my-auto-registered-dependencies';
+// ...or
+await import('my-auto-registered-dependencies');
+// ...or, if a module that imports the dependency module is loaded
+// prior to creating the container
+```
+
+### collection.set(...)
+
+```typescript
+import collection from '@lytical/ioc/collection';
+
+// transient - new instance created for every container.get(...)
+collection.set(MyClass);
+collection.set(MyClass, () => new MyClass()); // factory
+
+// singleton - same instance returned for every container.get(...)
+collection.set(MyClass, new MyClass());
+
+// wrap in [[...]] for factories
+collection.set(MyClass, () => [[new MyClass()]]);
+
+collection.set(MyPodClass, { conn_str: '...', conn_type: 'sql-server' });
+
+// container.get(...) returns the function without invoking it
+collection.set_func(MyFunction)
+
+// ...
+
+const container = await collection.create_container();
+
+const my_class = container.get(MyClass);
+const my_pod = container.require(MyPodClass);
+const my_func = container.get(MyFunction);
+my_func();
+```
+
+### decorators
+
+decorate your dependencies using `@ioc_injectable()`,\
+and then use the 'container' to create the dependency.
 
 ### most common use case
 
